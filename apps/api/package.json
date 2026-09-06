@@ -1,19 +1,26 @@
 {
   "name": "@skydrago/api",
-  "version": "1.0.0",
-  "main": "src/index.ts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Legacy Express API demo with health and in-memory item routes.",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/index.js",
-    "test": "jest"
+    "check": "npm run typecheck && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "express": "^4.18.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/node": "^22.0.0",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.0"
+    "typescript": "^5.6.0"
   }
 }
