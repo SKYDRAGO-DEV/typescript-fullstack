@@ -1,35 +1,37 @@
 import express from 'express';
-import { userRouter } from './routes/user.routes';
 import { itemRouter } from './routes/item.routes';
 import { errorHandler } from './middleware/error.middleware';
-import { authMiddleware } from './middleware/auth.middleware';
 
-const app = express();
-const PORT = process.env.PORT ?? 3000;
+export function createApp() {
+  const app = express();
 
-app.use(express.json());
+  app.disable('x-powered-by');
+  app.use(express.json({ limit: '32kb' }));
 
-// Health check (public)
-app.get('/api/v1/health', (_req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
+  app.get('/api/v1/health', (_req, res) => {
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptimeSeconds: process.uptime(),
+    });
   });
-});
 
-// Auth routes (public)
-app.use('/api/v1/auth', userRouter);
+  app.use('/api/v1/items', itemRouter);
+  app.use(errorHandler);
 
-// Protected routes
-app.use('/api/v1/users', authMiddleware, userRouter);
-app.use('/api/v1/items', authMiddleware, itemRouter);
+  return app;
+}
 
-// Error handling
-app.use(errorHandler);
+const PORT = Number(process.env.PORT ?? 3000);
+
+if (!Number.isInteger(PORT) || PORT <= 0 || PORT > 65535) {
+  throw new Error('PORT must be an integer between 1 and 65535');
+}
+
+const app = createApp();
 
 app.listen(PORT, () => {
-  console.log(`🚀 API server running on port ${PORT}`);
+  console.log(`API server listening on port ${PORT}`);
 });
 
 export default app;
