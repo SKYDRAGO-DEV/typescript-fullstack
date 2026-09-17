@@ -22,16 +22,21 @@ export function createApp() {
   return app;
 }
 
-const PORT = Number(process.env.PORT ?? 3000);
-
-if (!Number.isInteger(PORT) || PORT <= 0 || PORT > 65535) {
-  throw new Error('PORT must be an integer between 1 and 65535');
+export function resolvePort(rawPort = process.env.PORT ?? '3000'): number {
+  const port = Number(rawPort);
+  if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+    throw new Error('PORT must be an integer between 1 and 65535');
+  }
+  return port;
 }
 
 const app = createApp();
 
-app.listen(PORT, () => {
-  console.log(`API server listening on port ${PORT}`);
-});
+if (require.main === module) {
+  const port = resolvePort();
+  app.listen(port, () => {
+    console.log(`API server listening on port ${port}`);
+  });
+}
 
 export default app;
