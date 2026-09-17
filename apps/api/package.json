@@ -8,8 +8,9 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist",
     "start": "node dist/index.js",
-    "check": "npm run typecheck && npm run build"
+    "check": "npm run typecheck && npm test"
   },
   "engines": {
     "node": ">=20"
